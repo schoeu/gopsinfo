@@ -12,33 +12,33 @@ import (
 	"github.com/shirou/gopsutil/net"
 )
 
-type psInfo struct {
-	dateTime        string
-	logicalCores    int
-	physicalCores   int
-	percentPerCpu   []float64
-	cpuPercent      float64
-	cpuModel        []string
-	memTotal        uint64
-	memUsed         uint64
-	memUsedPercent  float64
-	bytesRecv       float64
-	bytesSent       float64
-	diskTotal       uint64
-	diskUsed        uint64
-	diskUsedPercent float64
-	load            []string
-	os              string
-	platform        string
-	platformFamily  string
-	platformVersion string
+type PsInfo struct {
+	DateTime        string
+	LogicalCores    int
+	PhysicalCores   int
+	PercentPerCpu   []float64
+	CpuPercent      float64
+	CpuModel        []string
+	MemTotal        uint64
+	MemUsed         uint64
+	MemUsedPercent  float64
+	BytesRecv       float64
+	BytesSent       float64
+	DiskTotal       uint64
+	DiskUsed        uint64
+	DiskUsedPercent float64
+	Load            []string
+	Os              string
+	Platform        string
+	PlatformFamily  string
+	PlatformVersion string
 }
 
 var (
 	timeFormat = "2006-01-02T15:04:05"
 	recv       float64
 	sent       float64
-	pi         psInfo
+	pi         PsInfo
 )
 
 func init() {
@@ -58,17 +58,17 @@ func getSysInfo() {
 
 	hostInfoStat, _ := host.Info()
 
-	pi.memTotal = v.Total
-	pi.logicalCores = logicalCount
-	pi.physicalCores = physicalCount
-	pi.cpuModel = cpuModel
-	pi.os = hostInfoStat.OS
-	pi.platform = hostInfoStat.Platform
-	pi.platformFamily = hostInfoStat.PlatformFamily
-	pi.platformVersion = hostInfoStat.PlatformVersion
+	pi.MemTotal = v.Total
+	pi.LogicalCores = logicalCount
+	pi.PhysicalCores = physicalCount
+	pi.CpuModel = cpuModel
+	pi.Os = hostInfoStat.OS
+	pi.Platform = hostInfoStat.Platform
+	pi.PlatformFamily = hostInfoStat.PlatformFamily
+	pi.PlatformVersion = hostInfoStat.PlatformVersion
 }
 
-func GetPsInfo(interval int) psInfo {
+func GetPsInfo(interval int) PsInfo {
 	v, _ := mem.VirtualMemory()
 	percentPerCpu, _ := cpu.Percent(time.Second, true)
 	cpuPercent, _ := cpu.Percent(time.Second, false)
@@ -105,17 +105,17 @@ func GetPsInfo(interval int) psInfo {
 
 	diskUsedPercent := float64(diskUsed) / float64(diskTotal)
 
-	pi.diskTotal = diskTotal
-	pi.diskUsedPercent = diskUsedPercent * 100
-	pi.diskUsed = diskUsed
-	pi.memUsedPercent = v.UsedPercent
-	pi.memUsed = v.Used
-	pi.percentPerCpu = percentPerCpu
-	pi.cpuPercent = cpuPercent[0]
-	pi.bytesRecv = recvRate
-	pi.bytesSent = sentRate
-	pi.dateTime = time.Now().Format(timeFormat)
-	pi.load = []string{
+	pi.DiskTotal = diskTotal
+	pi.DiskUsedPercent = diskUsedPercent * 100
+	pi.DiskUsed = diskUsed
+	pi.MemUsedPercent = v.UsedPercent
+	pi.MemUsed = v.Used
+	pi.PercentPerCpu = percentPerCpu
+	pi.CpuPercent = cpuPercent[0]
+	pi.BytesRecv = recvRate
+	pi.BytesSent = sentRate
+	pi.DateTime = time.Now().Format(timeFormat)
+	pi.Load = []string{
 		parseFloatNum(loadAvg.Load1),
 		parseFloatNum(loadAvg.Load5),
 		parseFloatNum(loadAvg.Load15),
@@ -126,10 +126,4 @@ func GetPsInfo(interval int) psInfo {
 
 func parseFloatNum(n float64) string {
 	return fmt.Sprintf("%.2f", n)
-}
-
-func errHandler(err error) {
-	if err != nil {
-		fmt.Println(err)
-	}
 }
