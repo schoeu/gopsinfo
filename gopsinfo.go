@@ -22,8 +22,8 @@ type PsInfo struct {
 	MemTotal        uint64
 	MemUsed         uint64
 	MemUsedPercent  float64
-	BytesRecv       float64
-	BytesSent       float64
+	RecvRate        float64
+	SentRate        float64
 	DiskTotal       uint64
 	DiskUsed        uint64
 	DiskUsedPercent float64
@@ -112,8 +112,8 @@ func GetPsInfo(interval int) PsInfo {
 	pi.MemUsed = v.Used
 	pi.PercentPerCpu = percentPerCpu
 	pi.CpuPercent = cpuPercent[0]
-	pi.BytesRecv = recvRate
-	pi.BytesSent = sentRate
+	pi.RecvRate = recvRate
+	pi.SentRate = sentRate
 	pi.DateTime = time.Now().Format(timeFormat)
 	pi.Load = []string{
 		parseFloatNum(loadAvg.Load1),
