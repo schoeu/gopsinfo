@@ -3,6 +3,7 @@ package gopsinfo
 import (
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/shirou/gopsutil/cpu"
@@ -14,25 +15,25 @@ import (
 )
 
 type PsInfo struct {
-	DateTime        string   `json:"dataTime"`
-	LogicalCores    int      `json:"logicalCores"`
-	PhysicalCores   int      `json:"physicalCores"`
-	PercentPerCpu   []string `json:"percentPerCpu"`
-	CpuPercent      float64  `json:"cpuPercent"`
-	CpuModel        []string `json:"cpuModel"`
-	MemTotal        uint64   `json:"memTotal"`
-	MemUsed         uint64   `json:"memUsed"`
-	MemUsedPercent  float64  `json:"memUsedPercent"`
-	RecvSpeed       float64  `json:"recvSpeed"`
-	SentSpeed       float64  `json:"sentSpeed"`
-	DiskTotal       uint64   `json:"diskTotal"`
-	DiskUsed        uint64   `json:"diskUsed"`
-	DiskUsedPercent float64  `json:"diskUsedPercent"`
-	Load            []string `json:"load"`
-	Os              string   `json:"os"`
-	Platform        string   `json:"platform"`
-	PlatformFamily  string   `json:"platformFamily"`
-	PlatformVersion string   `json:"platformVersion"`
+	DateTime        string  `json:"dataTime"`
+	LogicalCores    int     `json:"logicalCores"`
+	PhysicalCores   int     `json:"physicalCores"`
+	PercentPerCpu   string  `json:"percentPerCpu"`
+	CpuPercent      float64 `json:"cpuPercent"`
+	CpuModel        string  `json:"cpuModel"`
+	MemTotal        uint64  `json:"memTotal"`
+	MemUsed         uint64  `json:"memUsed"`
+	MemUsedPercent  float64 `json:"memUsedPercent"`
+	RecvSpeed       float64 `json:"recvSpeed"`
+	SentSpeed       float64 `json:"sentSpeed"`
+	DiskTotal       uint64  `json:"diskTotal"`
+	DiskUsed        uint64  `json:"diskUsed"`
+	DiskUsedPercent float64 `json:"diskUsedPercent"`
+	Load            string  `json:"load"`
+	Os              string  `json:"os"`
+	Platform        string  `json:"platform"`
+	PlatformFamily  string  `json:"platformFamily"`
+	PlatformVersion string  `json:"platformVersion"`
 }
 
 var (
@@ -62,7 +63,7 @@ func getSysInfo() {
 	pi.MemTotal = v.Total
 	pi.LogicalCores = logicalCount
 	pi.PhysicalCores = physicalCount
-	pi.CpuModel = cpuModel
+	pi.CpuModel = strings.Join(cpuModel, ",")
 	pi.Os = hostInfoStat.OS
 	pi.Platform = hostInfoStat.Platform
 	pi.PlatformFamily = hostInfoStat.PlatformFamily
@@ -117,16 +118,16 @@ func GetPsInfo(interval int) PsInfo {
 	pi.DiskUsed = diskUsed
 	pi.MemUsedPercent = v.UsedPercent
 	pi.MemUsed = v.Used
-	pi.PercentPerCpu = perCpuData
+	pi.PercentPerCpu = strings.Join(perCpuData, ",")
 	pi.CpuPercent = cpuPercent[0]
 	pi.RecvSpeed = recvRate
 	pi.SentSpeed = sentRate
 	pi.DateTime = time.Now().Format(timeFormat)
-	pi.Load = []string{
+	pi.Load = strings.Join([]string{
 		parseFloatNum(loadAvg.Load1),
 		parseFloatNum(loadAvg.Load5),
 		parseFloatNum(loadAvg.Load15),
-	}
+	}, ",")
 
 	return pi
 }
