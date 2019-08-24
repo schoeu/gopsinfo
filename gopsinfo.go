@@ -2,6 +2,7 @@ package gopsinfo
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/shirou/gopsutil/cpu"
@@ -74,7 +75,7 @@ func GetPsInfo(interval int) PsInfo {
 
 	var perCpuData []string
 	for _, v := range percentPerCpu {
-		perCpuData = append(perCpuData, fmt.Sprintf("%.2f", v))
+		perCpuData = append(perCpuData, strconv.FormatFloat(v, 'f', 2, 64))
 	}
 
 	cpuPercent, _ := cpu.Percent(time.Microsecond, false)
