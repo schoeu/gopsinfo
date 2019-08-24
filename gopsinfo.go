@@ -13,25 +13,25 @@ import (
 )
 
 type PsInfo struct {
-	DateTime        string
-	LogicalCores    int
-	PhysicalCores   int
-	PercentPerCpu   []float64
-	CpuPercent      float64
-	CpuModel        []string
-	MemTotal        uint64
-	MemUsed         uint64
-	MemUsedPercent  float64
-	RecvSpeed       float64
-	SentSpeed       float64
-	DiskTotal       uint64
-	DiskUsed        uint64
-	DiskUsedPercent float64
-	Load            []string
-	Os              string
-	Platform        string
-	PlatformFamily  string
-	PlatformVersion string
+	DateTime        string    `json:"dataTime"`
+	LogicalCores    int       `json:"logicalCores"`
+	PhysicalCores   int       `json:"physicalCores"`
+	PercentPerCpu   []float64 `json:"percentPerCpu"`
+	CpuPercent      float64   `json:"cpuPercent"`
+	CpuModel        []string  `json:"cpuModel"`
+	MemTotal        uint64    `json:"memTotal"`
+	MemUsed         uint64    `json:"memUsed"`
+	MemUsedPercent  float64   `json:"memUsedPercent"`
+	RecvSpeed       float64   `json:"recvSpeed"`
+	SentSpeed       float64   `json:"sentSpeed"`
+	DiskTotal       uint64    `json:"diskTotal"`
+	DiskUsed        uint64    `json:"diskUsed"`
+	DiskUsedPercent float64   `json:"diskUsedPercent"`
+	Load            []string  `json:"load"`
+	Os              string    `json:"os"`
+	Platform        string    `json:"platform"`
+	PlatformFamily  string    `json:"platformFamily"`
+	PlatformVersion string    `json:"platformVersion"`
 }
 
 var (
@@ -70,8 +70,8 @@ func getSysInfo() {
 
 func GetPsInfo(interval int) PsInfo {
 	v, _ := mem.VirtualMemory()
-	percentPerCpu, _ := cpu.Percent(time.Second, true)
-	cpuPercent, _ := cpu.Percent(time.Second, false)
+	percentPerCpu, _ := cpu.Percent(time.Microsecond, true)
+	cpuPercent, _ := cpu.Percent(time.Microsecond, false)
 	diskInfo, _ := disk.Partitions(true)
 	loadAvg, _ := load.Avg()
 	var diskTotal, diskUsed uint64
@@ -85,7 +85,7 @@ func GetPsInfo(interval int) PsInfo {
 	}
 
 	nw, _ := net.IOCounters(false)
-	parseNum := float64(uint64(interval) / 1000)
+	parseNum := float64(interval / 1000)
 	var recvRate, sentRate float64
 	if len(nw) > 0 && nw[0].Name == "all" {
 		br := float64(nw[0].BytesRecv)
