@@ -13,25 +13,25 @@ import (
 )
 
 type PsInfo struct {
-	DateTime        string    `json:"dataTime"`
-	LogicalCores    int       `json:"logicalCores"`
-	PhysicalCores   int       `json:"physicalCores"`
-	PercentPerCpu   []float64 `json:"percentPerCpu"`
-	CpuPercent      float64   `json:"cpuPercent"`
-	CpuModel        []string  `json:"cpuModel"`
-	MemTotal        uint64    `json:"memTotal"`
-	MemUsed         uint64    `json:"memUsed"`
-	MemUsedPercent  float64   `json:"memUsedPercent"`
-	RecvSpeed       float64   `json:"recvSpeed"`
-	SentSpeed       float64   `json:"sentSpeed"`
-	DiskTotal       uint64    `json:"diskTotal"`
-	DiskUsed        uint64    `json:"diskUsed"`
-	DiskUsedPercent float64   `json:"diskUsedPercent"`
-	Load            []string  `json:"load"`
-	Os              string    `json:"os"`
-	Platform        string    `json:"platform"`
-	PlatformFamily  string    `json:"platformFamily"`
-	PlatformVersion string    `json:"platformVersion"`
+	DateTime        string   `json:"dataTime"`
+	LogicalCores    int      `json:"logicalCores"`
+	PhysicalCores   int      `json:"physicalCores"`
+	PercentPerCpu   []string `json:"percentPerCpu"`
+	CpuPercent      float64  `json:"cpuPercent"`
+	CpuModel        []string `json:"cpuModel"`
+	MemTotal        uint64   `json:"memTotal"`
+	MemUsed         uint64   `json:"memUsed"`
+	MemUsedPercent  float64  `json:"memUsedPercent"`
+	RecvSpeed       float64  `json:"recvSpeed"`
+	SentSpeed       float64  `json:"sentSpeed"`
+	DiskTotal       uint64   `json:"diskTotal"`
+	DiskUsed        uint64   `json:"diskUsed"`
+	DiskUsedPercent float64  `json:"diskUsedPercent"`
+	Load            []string `json:"load"`
+	Os              string   `json:"os"`
+	Platform        string   `json:"platform"`
+	PlatformFamily  string   `json:"platformFamily"`
+	PlatformVersion string   `json:"platformVersion"`
 }
 
 var (
@@ -71,6 +71,12 @@ func getSysInfo() {
 func GetPsInfo(interval int) PsInfo {
 	v, _ := mem.VirtualMemory()
 	percentPerCpu, _ := cpu.Percent(time.Microsecond, true)
+
+	var perCpuData []string
+	for _, v := range percentPerCpu {
+		perCpuData = append(perCpuData, fmt.Sprintf("%.2f", v))
+	}
+
 	cpuPercent, _ := cpu.Percent(time.Microsecond, false)
 	diskInfo, _ := disk.Partitions(true)
 	loadAvg, _ := load.Avg()
@@ -110,7 +116,7 @@ func GetPsInfo(interval int) PsInfo {
 	pi.DiskUsed = diskUsed
 	pi.MemUsedPercent = v.UsedPercent
 	pi.MemUsed = v.Used
-	pi.PercentPerCpu = percentPerCpu
+	pi.PercentPerCpu = perCpuData
 	pi.CpuPercent = cpuPercent[0]
 	pi.RecvSpeed = recvRate
 	pi.SentSpeed = sentRate
