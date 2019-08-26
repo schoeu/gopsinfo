@@ -53,8 +53,7 @@ func getSysInfo() {
 
 	var cpuModel []string
 	for _, subCpu := range c {
-		modeName := strings.Replace(subCpu.ModelName, "\"", "", -1)
-		cpuModel = append(cpuModel, fmt.Sprintf(`"%s"`, modeName))
+		cpuModel = append(cpuModel, subCpu.ModelName)
 	}
 
 	hostInfoStat, _ := host.Info()
