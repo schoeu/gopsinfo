@@ -2,7 +2,6 @@ package gopsinfo
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 	"time"
 
@@ -18,7 +17,6 @@ type PsInfo struct {
 	DateTime        string  `json:"dataTime"`
 	LogicalCores    int     `json:"logicalCores"`
 	PhysicalCores   int     `json:"physicalCores"`
-	PercentPerCpu   string  `json:"percentPerCpu"`
 	CpuPercent      float64 `json:"cpuPercent"`
 	CpuModel        string  `json:"cpuModel"`
 	MemTotal        uint64  `json:"memTotal"`
@@ -73,12 +71,6 @@ func getSysInfo() {
 
 func GetPsInfo(interval int) PsInfo {
 	v, _ := mem.VirtualMemory()
-	percentPerCpu, _ := cpu.Percent(time.Microsecond, true)
-
-	var perCpuData []string
-	for _, v := range percentPerCpu {
-		perCpuData = append(perCpuData, strconv.FormatFloat(v, 'f', 2, 64))
-	}
 
 	cpuPercent, _ := cpu.Percent(time.Microsecond, false)
 	diskInfo, _ := disk.Partitions(true)
@@ -119,7 +111,6 @@ func GetPsInfo(interval int) PsInfo {
 	pi.DiskUsed = diskUsed
 	pi.MemUsedPercent = v.UsedPercent
 	pi.MemUsed = v.Used
-	pi.PercentPerCpu = strings.Join(perCpuData, ",")
 	pi.CpuPercent = cpuPercent[0]
 	pi.RecvSpeed = recvRate
 	pi.SentSpeed = sentRate
