@@ -76,7 +76,7 @@ func getSysInfo() {
 func GetPsInfo(interval time.Duration) PsInfo {
 	v, _ := mem.VirtualMemory()
 
-	cpuPercent, _ := cpu.Percent(interval, false)
+	cpuPercent, _ := cpu.Percent(0, false)
 	diskInfo, _ := disk.Partitions(true)
 	loadAvg, _ := load.Avg()
 	var diskTotal, diskUsed uint64
