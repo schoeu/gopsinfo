@@ -61,11 +61,16 @@ func getSysInfo() {
 	pi.MemTotal = v.Total
 	pi.LogicalCores = logicalCount
 	pi.PhysicalCores = physicalCount
-	pi.CpuModel = strings.Join(cpuModel, ",")
 	pi.Os = hostInfoStat.OS
 	pi.Platform = hostInfoStat.Platform
 	pi.PlatformFamily = hostInfoStat.PlatformFamily
 	pi.PlatformVersion = hostInfoStat.PlatformVersion
+
+	var cm string
+	if len(cpuModel) > 0 {
+		cm = cpuModel[0]
+	}
+	pi.CpuModel = cm
 }
 
 func GetPsInfo(interval time.Duration) PsInfo {
