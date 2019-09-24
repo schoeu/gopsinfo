@@ -68,10 +68,10 @@ func getSysInfo() {
 	pi.PlatformVersion = hostInfoStat.PlatformVersion
 }
 
-func GetPsInfo(interval int) PsInfo {
+func GetPsInfo(interval time.Duration) PsInfo {
 	v, _ := mem.VirtualMemory()
 
-	cpuPercent, _ := cpu.Percent(time.Microsecond, false)
+	cpuPercent, _ := cpu.Percent(interval, false)
 	diskInfo, _ := disk.Partitions(true)
 	loadAvg, _ := load.Avg()
 	var diskTotal, diskUsed uint64
@@ -85,7 +85,8 @@ func GetPsInfo(interval int) PsInfo {
 	}
 
 	nw, _ := net.IOCounters(false)
-	parseNum := float64(interval / 1000)
+
+	parseNum := interval.Seconds() / 1000
 	var recvRate, sentRate float64
 	if len(nw) > 0 && nw[0].Name == "all" {
 		br := float64(nw[0].BytesRecv)

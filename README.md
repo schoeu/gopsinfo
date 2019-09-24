@@ -11,8 +11,8 @@ import "github.com/schoeu/gopsinfo"
 ### 方法
 
 ```
-// GetPsInfo(during int) during为检测时间区间，以毫秒为单位
-gopsinfo.GetPsInfo(2000)
+// GetPsInfo(during time.Duration) during为检测时间区间
+gopsinfo.GetPsInfo(during)
 ```
 
 ## 数据
